@@ -1,0 +1,95 @@
+#include <string>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <numeric>
+#include <tuple>
+#include <cmath>
+
+
+using namespace std;
+
+int greatest_common_divisor(int a, int b) {
+	if (a % b == 0)
+		return b;
+	if (b % a == 0)
+		return a;
+	if (a > b)
+		return greatest_common_divisor(a % b, b);
+	return greatest_common_divisor(a, b % a);
+}
+
+int main() {
+	
+	int l, n, sum = 0, del = -1;
+	cin >> l >> n;
+	vector<int> vec(n);
+	for (int i = 0; i < n; i++)
+	{
+		cin >> vec[i];
+	}
+	stable_sort(vec.begin(), vec.end());
+	for (int i = 1; i < n - 1; i++)
+	{
+		if (vec[i + 1] - vec[i - 1] > sum)
+		{
+			sum = vec[i + 1] - vec[i - 1];
+			del = i;
+		}
+	}
+	if (del != -1) {
+		vec.erase(vec.begin() + del);
+	}
+
+	double time = 0.0;
+	double speed = 1.0;  
+	double position = 0.0;
+
+	vec.push_back(l);
+	for (int i = 0; i < vec.size(); i++) {
+		double next_well = vec[i];
+		double distance = next_well - position;
+
+		while (distance >= 0) {
+
+			time += 1.0; 
+			position += speed; 
+			distance -= speed; 
+			speed++; 
+			if (distance <= 0)
+			{
+				time -= 1.0;
+				position -= speed;
+				distance += speed;
+				speed--;
+
+				time += distance / speed;
+
+				break;
+			}
+		}
+		if (i < vec.size() - 1) {
+			time += 2.0; 
+			position += 1.0; 
+			speed = 1.0;
+		}
+
+
+	}
+	
+	float cel = (int)time;
+	double drob;
+	double pups = modf(time, &drob);
+	
+    
+	string ss = to_string(time);
+	int kol = ss.length() - 2;
+	int des = pow(10, kol);
+	pups *= des;
+	int gcd = greatest_common_divisor((int)pups, (int)des);
+
+	pups /= gcd;
+	des /= gcd;
+
+	cout << cel << " " << pups << "/" << des;
+}
